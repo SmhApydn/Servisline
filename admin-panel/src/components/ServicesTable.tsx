@@ -52,6 +52,7 @@ const ServicesTable: React.FC = () => {
       route: service.route || '',
       plate: service.plate || '',
       driver: service.driver || '',
+      name: service.name || '',
     });
     setModalOpen(true);
   };
@@ -69,13 +70,21 @@ const ServicesTable: React.FC = () => {
   const handleOk = async () => {
     try {
       const values = await form.validateFields();
-      console.log('Form values:', values);
+      console.log('Tüm form values:', values);
+      if (!values.name) {
+        message.error('Servis adı zorunlu!');
+        return;
+      }
+      if (!values.driver) {
+        message.error('Şoför seçmek zorunlu!');
+        return;
+      }
       setSaving(true);
       if (editingService) {
-        await updateService(editingService.id, values);
+        await updateService(editingService.id, { ...values, driverId: values.driver, name: values.name });
         message.success('Servis güncellendi');
       } else {
-        await addService(values);
+        await addService({ ...values, driverId: values.driver, name: values.name });
         message.success('Servis eklendi');
       }
       setModalOpen(false);
@@ -161,6 +170,9 @@ const ServicesTable: React.FC = () => {
         confirmLoading={saving}
       >
         <Form form={form} layout="vertical">
+          <Form.Item name="name" label="Servis Adı" rules={[{ required: true, message: 'Servis adı girin!' }]}> 
+            <Input />
+          </Form.Item>
           <Form.Item name="route" label="Güzergah">
             <Input />
           </Form.Item>
