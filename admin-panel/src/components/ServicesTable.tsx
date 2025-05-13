@@ -48,7 +48,11 @@ const ServicesTable: React.FC = () => {
 
   const openEditModal = (service: Service) => {
     setEditingService(service);
-    form.setFieldsValue(service);
+    form.setFieldsValue({
+      route: service.route || '',
+      plate: service.plate || '',
+      driverId: service.driverId || '',
+    });
     setModalOpen(true);
   };
 
@@ -65,6 +69,7 @@ const ServicesTable: React.FC = () => {
   const handleOk = async () => {
     try {
       const values = await form.validateFields();
+      console.log('Form values:', values);
       setSaving(true);
       if (editingService) {
         await updateService(editingService.id, values);
@@ -122,22 +127,9 @@ const ServicesTable: React.FC = () => {
   };
 
   const columns = [
-    { title: 'Servis Adı', dataIndex: 'name', key: 'name' },
-    { title: 'Şoför', dataIndex: 'driver', key: 'driver' },
-    { title: 'Plaka', dataIndex: 'plate', key: 'plate' },
     { title: 'Güzergah', dataIndex: 'route', key: 'route' },
-    {
-      title: 'Atanan Personel',
-      key: 'assignedUsers',
-      render: (_: any, record: Service) => (
-        <Space>
-          {record.assignedUsers?.map(userId => {
-            const user = users.find(u => u.id === userId);
-            return user ? <Tag key={userId}>{user.name}</Tag> : null;
-          })}
-        </Space>
-      ),
-    },
+    { title: 'Plaka', dataIndex: 'plate', key: 'plate' },
+    { title: 'Şoför', dataIndex: 'driver', key: 'driver' },
     {
       title: 'İşlemler',
       key: 'actions',
@@ -169,10 +161,19 @@ const ServicesTable: React.FC = () => {
         confirmLoading={saving}
       >
         <Form form={form} layout="vertical">
-          <Form.Item name="name" label="Servis Adı" rules={[{ required: true, message: 'Servis adı girin!' }]}> <Input /> </Form.Item>
-          <Form.Item name="driver" label="Şoför" rules={[{ required: true, message: 'Şoför adı girin!' }]}> <Input /> </Form.Item>
-          <Form.Item name="plate" label="Plaka" rules={[{ required: true, message: 'Plaka girin!' }]}> <Input /> </Form.Item>
-          <Form.Item name="route" label="Güzergah"> <Input /> </Form.Item>
+          <Form.Item name="route" label="Güzergah">
+            <Input />
+          </Form.Item>
+          <Form.Item name="plate" label="Plaka" rules={[{ required: true, message: 'Plaka girin!' }]}> 
+            <Input />
+          </Form.Item>
+          <Form.Item name="driverId" label="Şoför" rules={[{ required: true, message: 'Şoför seçin!' }]}> 
+            <Select placeholder="Şoför seçin">
+              {users.filter(u => u.role === 'Şoför').map(u => (
+                <Select.Option key={u.id} value={u.id}>{u.name}</Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
         </Form>
       </Modal>
 

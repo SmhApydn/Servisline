@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Layout, Menu } from 'antd';
 import {
+  CarOutlined,
   DashboardOutlined,
   UserOutlined,
   EnvironmentOutlined,
@@ -11,14 +12,18 @@ import './App.css';
 import Login from './Login';
 import ServiceRoutesTable from './components/ServiceRoutesTable';
 import UsersTable from './components/UsersTable';
+import ServicesTable from './components/ServicesTable';
 import logo from './assets/servisline-logo.png';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import DriversTable from './components/DriversTable';
 
 const { Header, Sider, Content } = Layout;
 
 const menuItems = [
   { key: '/dashboard', icon: <DashboardOutlined />, label: 'Dashboard' },
+  { key: '/services', icon: <CarOutlined />, label: 'Servisler' },
   { key: '/routes', icon: <EnvironmentOutlined />, label: 'Servis Rotaları' },
+  { key: '/drivers', icon: <UserOutlined />, label: 'Şoförler' },
   { key: '/users', icon: <UserOutlined />, label: 'Kullanıcılar' },
   { key: '/notifications', icon: <NotificationOutlined />, label: 'Bildirimler' },
 ];
@@ -46,7 +51,7 @@ const App: React.FC = () => {
             background: 'transparent',
           }}>
             <img src={logo} alt="ServisLine Logo" style={{ maxHeight: 48, maxWidth: '100%' }} />
-          </div>
+      </div>
           <Menu
             theme="dark"
             mode="inline"
@@ -78,7 +83,9 @@ const App: React.FC = () => {
           }}>
             <Routes>
               <Route path="/dashboard" element={<h2>Dashboard</h2>} />
+              <Route path="/services" element={<ServicesTable />} />
               <Route path="/routes" element={<ServiceRoutesTable />} />
+              <Route path="/drivers" element={<DriversTable />} />
               <Route path="/users" element={<UsersTable />} />
               <Route path="/notifications" element={<h2>Bildirim Yönetimi</h2>} />
               <Route path="/" element={<h2>Dashboard</h2>} />
@@ -86,7 +93,7 @@ const App: React.FC = () => {
           </Content>
         </Layout>
       </Layout>
-    </div>
+      </div>
   );
 };
 

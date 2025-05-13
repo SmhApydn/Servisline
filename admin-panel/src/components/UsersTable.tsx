@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Button, Modal, Form, Input, Space, Popconfirm, message, Select } from 'antd';
-import { getUsers, addUser, updateUser, deleteUser } from '../services/api';
-import type { User } from '../services/api';
+import { getUsers, addUser, updateUser, deleteUser, getServices } from '../services/api';
+import type { User, Service } from '../services/api';
 
 const { Option } = Select;
 
@@ -12,6 +12,7 @@ const UsersTable: React.FC = () => {
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [form] = Form.useForm();
   const [saving, setSaving] = useState(false);
+  const [services, setServices] = useState<Service[]>([]);
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -26,6 +27,7 @@ const UsersTable: React.FC = () => {
 
   useEffect(() => {
     fetchUsers();
+    getServices().then(setServices);
   }, []);
 
   const openAddModal = () => {
@@ -129,6 +131,16 @@ const UsersTable: React.FC = () => {
               <Option value="Şoför">Şoför</Option>
               <Option value="Çalışan">Çalışan</Option>
               <Option value="Yönetici">Yönetici</Option>
+            </Select>
+          </Form.Item>
+          <Form.Item 
+            name="serviceIds" 
+            label="Bineceği Servis(ler)" 
+          >
+            <Select mode="multiple" placeholder="Servis seçin">
+              {services.map(service => (
+                <Option key={service.id} value={service.id}>{service.name}</Option>
+              ))}
             </Select>
           </Form.Item>
         </Form>
