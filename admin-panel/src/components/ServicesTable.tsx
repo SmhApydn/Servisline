@@ -51,7 +51,7 @@ const ServicesTable: React.FC = () => {
     form.setFieldsValue({
       route: service.route || '',
       plate: service.plate || '',
-      driverId: service.driverId || '',
+      driver: service.driver || '',
     });
     setModalOpen(true);
   };
@@ -167,7 +167,7 @@ const ServicesTable: React.FC = () => {
           <Form.Item name="plate" label="Plaka" rules={[{ required: true, message: 'Plaka girin!' }]}> 
             <Input />
           </Form.Item>
-          <Form.Item name="driverId" label="Şoför" rules={[{ required: true, message: 'Şoför seçin!' }]}> 
+          <Form.Item name="driver" label="Şoför" rules={[{ required: true, message: 'Şoför seçin!' }]}> 
             <Select placeholder="Şoför seçin">
               {users.filter(u => u.role === 'Şoför').map(u => (
                 <Select.Option key={u.id} value={u.id}>{u.name}</Select.Option>
