@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  services  Service[]
+  assignedServices Service[] @relation("ServiceAssignments")
+  phone     String? // Kullanıcının telefon numarası
+  department String? // Kullanıcının çalıştığı departmans
+  morningStatus String? // joining | not_joining
+  eveningStatus String? // joining | not_joining
+  morningStatusUpdatedAt DateTime?
+  eveningStatusUpdatedAt DateTime?
+  attendances Attendance[]
+}
+
+model Service {
+  id        String   @id @default(uuid())
+  name      String
+  plate     String
+  route     String?
+  driverId  String?
+  driver    User?    @relation(fields: [driverId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  assignedUsers User[] @relation("ServiceAssignments")
+}
+
+model Route {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Attendance {
+  id        String   @id @default(uuid())
+  userId    String
+  date      DateTime
+  period    String   // 'morning' veya 'evening'
+  status    String   // 'joining' veya 'not_joining'
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@unique([userId, date, period])
+}
+
+enum Role {
+  USER
+  ADMIN
+  DRIVER
+}
