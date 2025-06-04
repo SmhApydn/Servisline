@@ -44,7 +44,7 @@ router.get('/me', async (req, res) => {
       role: user.role,
       phone: user.phone,
       department: user.department,
-      assignedServices: user.assignedServices.map(service => ({
+      assignedServices: user.assignedServices.map((service: any) => ({
         id: service.id,
         name: service.name,
         plate: service.plate,

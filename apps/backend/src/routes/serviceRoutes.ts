@@ -76,7 +76,7 @@ router.get('/location', async (req, res) => {
     });
     if (!user || !user.assignedServices.length) return res.status(404).json({ error: 'Servis bulunamadı' });
     // Şoförün kendi olduğu servisi bul
-    const myService = user.assignedServices.find((s: { driver: { id: string } | null }) => s.driver && s.driver.id === user.id);
+    const myService = user.assignedServices.find((s: any) => s.driver && s.driver.id === user.id);
     const driver = myService ? myService.driver : user.assignedServices[0].driver;
     if (!driver) return res.status(404).json({ error: 'Şoför bulunamadı' });
     const loc = driverLocations[driver.id];
@@ -259,7 +259,7 @@ router.get('/messages', async (req, res) => {
     const decoded = require('jsonwebtoken').verify(token, process.env.JWT_SECRET || 'your-secret-key');
     const user = await prisma.user.findUnique({ where: { id: decoded.id }, include: { assignedServices: true } });
     // Kullanıcı bu servise atanmış mı kontrol et
-    const assigned = user?.assignedServices.some(s => s.id === serviceId);
+    const assigned = user?.assignedServices.some((s: any) => s.id === serviceId);
     if (!assigned) return res.status(403).json({ error: 'Bu servise atanmadınız' });
     res.json(messagesByService[serviceId as string] || []);
   } catch {
@@ -281,7 +281,7 @@ router.post('/messages', async (req, res) => {
     const user = await prisma.user.findUnique({ where: { id: decoded.id }, include: { assignedServices: true } });
     sender = user?.name || 'Bilinmeyen';
     // Kullanıcı bu servise atanmış mı kontrol et
-    const assigned = user?.assignedServices.some(s => s.id === serviceId);
+    const assigned = user?.assignedServices.some((s: any) => s.id === serviceId);
     if (!assigned) return res.status(403).json({ error: 'Bu servise atanmadınız' });
   } catch {
     return res.status(401).json({ error: 'Geçersiz token' });
