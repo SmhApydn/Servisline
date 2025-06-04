@@ -2,14 +2,11 @@
   "compilerOptions": {
     "target": "es2017",
     "module": "commonjs",
-    "rootDir": "../../",
+    "rootDir": "src",
     "outDir": "dist",
     "esModuleInterop": true,
     "strict": true,
-    "baseUrl": "./",
-    "paths": {
-      "shared/*": ["../../packages/shared/*"]
-    }
+    "baseUrl": "./"
   },
-  "include": ["src/**/*", "../../packages/shared/**/*"]
+  "include": ["src/**/*"]
 } 
